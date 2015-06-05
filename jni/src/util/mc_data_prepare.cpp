@@ -14,7 +14,7 @@
 using namespace std;
 using namespace cv;
 
-const int LEARANDATA_COUNT = 1000;
+const int LEARANDATA_COUNT = 5000;
 
 void getFiles( string path, vector<string>& files );
 void SplitString(const string& s, vector<string>& v, const string& c);
@@ -126,7 +126,7 @@ bool isNotNight(const string& filepath)
 //! MC：将rawdata的文件换个路径到learndata里
 bool getNewPath(const string& filepath, string& newfilepath)
 {
-	string writePath = "F:/data/easypr-data/learndata/";
+	string writePath = "F:/data/easypr-data/learndata_dl/";
 	vector<string> spilt_path;
 	SplitString(filepath, spilt_path, "\\");
 
@@ -190,16 +190,17 @@ void getPlateLicense(const string& filepath, string& plateLicense)
 //! MC：将rawdata截取部分数据到learndata中
 void getLearnData()
 {
-	char * filePath = "F:/data/easypr-data/rawdata";
+	const char * filePath = "F:/data/easypr-data/rawdata";
 
 	////获取该路径下的所有文件
 	vector<string> files;
 	getFiles(filePath, files );
 
 	int size = files.size();
-	if (0 == size)
-		cout << "No File Found in rawdata!" << endl;
-
+    if (0 == size) {
+		cout << "File not found in " << filePath << endl;
+        return;
+    }
 	////随机排列rawdata
 	srand(unsigned(time(NULL)));
 	random_shuffle(files.begin(), files.end());
@@ -207,15 +208,15 @@ void getLearnData()
 	////选取前LEARANDATA_COUNT个rawdata数据作为learndata
 	int boundry = LEARANDATA_COUNT;
 	int count = 0;
-	cout << "Save learndata!" << endl;
+	cout << "Learndata saved!" << endl;
 	for (int i = 0; i < size; i++)
 	{
 		cout << files[i].c_str() << endl;
 		string filepath = files[i].c_str();
 
 		//只处理白天的数据
-		if (isNotNight(filepath)!=true)
-			continue;
+		//if (isNotNight(filepath)!=true)
+		//	continue;
 
 		//读取数据，并对图片进行预处理
 		Mat img = imread(filepath);
